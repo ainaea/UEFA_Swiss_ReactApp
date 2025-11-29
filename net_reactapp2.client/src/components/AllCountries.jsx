@@ -1,13 +1,11 @@
 import Country from './Country';
 import { Plus } from 'react-bootstrap-icons';
-//import { useNavigate } from 'react-router-dom';
 function AllCountries({ countries, navigator }) {
-    //const navigate = useNavigate();
     function addCountry() {
         navigator('/add-country');
     }
-    return (
-      <div className="bg-secondary pt-2 row">
+    return (countries == null ? <h3>No Club to display at the moment</h3> :
+        <div className="bg-secondary pt-2 pb-2 row">
             {countries.map(c => <Country key={c.id} country={c} navigator={navigator }  />)}
             <div className="col-md-12">
             </div>

@@ -22,13 +22,13 @@ function NavMenu() {
                               <NavLink tag={Link} className="text-dark" to="/">Countries</NavLink>
                           </NavItem>
                           <NavItem>
-                              <NavLink tag={Link} className="text-dark" to="/counter">Clubs</NavLink>
+                              <NavLink tag={Link} className="text-dark" to="/Clubs">Clubs</NavLink>
                           </NavItem>
                           <NavItem>
-                              <NavLink tag={Link} className="text-dark" to="/rank-items">Scenarios</NavLink>
+                              <NavLink tag={Link} className="text-dark" to="/Scenarios">Scenarios</NavLink>
                           </NavItem>
                           <NavItem>
-                              <NavLink tag={Link} className="text-dark" to="/rank-items">Simulations</NavLink>
+                              <NavLink tag={Link} className="text-dark" to="/Simulations">Simulations</NavLink>
                           </NavItem>
                       </ul>
                   </Collapse>
