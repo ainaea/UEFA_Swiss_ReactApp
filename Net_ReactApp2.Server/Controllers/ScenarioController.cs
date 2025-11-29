@@ -1,83 +1,52 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UEFASwissFormatSelector.Models;
+using UEFASwissFormatSelector.Services;
 
 namespace Net_ReactApp2.Server.Controllers
 {
     public class ScenarioController : Controller
     {
-        // GET: ScenarioController
-        public ActionResult Index()
+        private readonly IRepository repository;
+
+        public ScenarioController(IRepository repository)
         {
-            return Ok();
+            this.repository = repository;
+        }
+        public IActionResult GetAll()
+        {
+            return Ok(repository.Scenarios.OrderBy(c => c.Name).ToList());
         }
 
-        // GET: ScenarioController/Details/5
-        public ActionResult Details(int id)
+        public IActionResult Get(Guid id)
         {
-            return Ok();
+            return Ok(repository.Scenarios.FirstOrDefault(c => c.Id == id));
         }
 
-        // GET: ScenarioController/Create
-        public ActionResult Create()
-        {
-            return Ok();
-        }
-
-        // POST: ScenarioController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Create([FromBody] Scenario scenario)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                scenario.Id = Guid.NewGuid();
+                repository.Scenarios.Add(scenario);
+                return Ok("Scenario added successfully");
             }
-            catch
+            return BadRequest("Model not valid");
+        }
+
+        [HttpPost]
+        public ActionResult Edit([FromBody] Scenario scenario)
+        {
+            if (ModelState.IsValid)
             {
+                var repoScenario = repository.Scenarios.Find(scenario.Id);
+                if (repoScenario == null)
+                    return NotFound();
+                repository.Scenarios.Update(scenario);
                 return Ok();
             }
-        }
-
-        // GET: ScenarioController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return Ok();
-        }
-
-        // POST: ScenarioController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return Ok();
-            }
-        }
-
-        // GET: ScenarioController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return Ok();
-        }
-
-        // POST: ScenarioController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return Ok();
-            }
+            return BadRequest("Model not valid");
         }
     }
 }
