@@ -1,83 +1,63 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UEFASwissFormatSelector.Models;
+using UEFASwissFormatSelector.Services;
 
 namespace Net_ReactApp2.Server.Controllers
 {
     public class ClubController : Controller
     {
-        // GET: ClubController
-        public IActionResult Index()
+        private readonly IRepository repository;
+
+        public ClubController(IRepository repository)
         {
-            return Ok();
+            this.repository = repository;
         }
 
-        // GET: ClubController/Details/5
-        public ActionResult Details(int id)
+        public IActionResult GetAll()
         {
-            return Ok();
+            return Ok(repository.Clubs.OrderBy(c => c.Name).ThenBy(c=>c.Country?.Name).ToList());
         }
 
-        // GET: ClubController/Create
-        public ActionResult Create()
+        public IActionResult Get(Guid id)
         {
-            return Ok();
+            return Ok(repository.Clubs.FirstOrDefault(c => c.Id == id));
         }
 
-        // POST: ClubController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Create([FromBody] Club club)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var clubCountry = repository.Countries.FirstOrDefault(c => club.CountryId == c.Id);
+                if (clubCountry == null)
+                {
+                    return BadRequest("Country not found");
+                }
+                club.Id = Guid.NewGuid();
+                repository.Clubs.Add(club);
+                return Ok("Club added successfully");
             }
-            catch
+            return BadRequest("Model not valid");
+        }
+
+        [HttpPost]
+        public ActionResult Edit([FromBody] Club club)
+        {
+            if (ModelState.IsValid)
             {
+                var clubCountry = repository.Countries.FirstOrDefault(c => club.CountryId == c.Id);
+                if (clubCountry == null)
+                {
+                    return BadRequest("Country not found");
+                }
+                var repoCountry = repository.Clubs.Find(club.Id);
+                if (repoCountry == null)
+                    return NotFound();
+                repository.Clubs.Update(club);
                 return Ok();
             }
-        }
-
-        // GET: ClubController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return Ok();
-        }
-
-        // POST: ClubController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return Ok();
-            }
-        }
-
-        // GET: ClubController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return Ok();
-        }
-
-        // POST: ClubController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return Ok();
-            }
+            return BadRequest("Model not valid");
         }
     }
 }
