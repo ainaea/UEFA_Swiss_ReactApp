@@ -127,7 +127,6 @@ namespace UEFASwissFormatSelector.Services
                 new Club{ Name = "Brest", CountryId = new Guid("6661ef33-73b5-45f8-9927-9bfb37f39844"), Id = new Guid("6669ef33-73b5-45f8-9927-9bfb37f39844")},
                 new Club{ Name = "Ferencvaros", CountryId = new Guid("806f85b8-30f9-4eb6-9bb1-cb24cfc98abc"), Id = new Guid("6661ef33-73b5-45f8-9987-9bfb37f39844")},
                 new Club{ Name = "Union SG", CountryId = new Guid("1661ef33-73b5-45f8-9927-9bfb37f39899"), Id = new Guid("6669ef33-73b5-45f8-9987-9bfb37f39844")},
-                new Club{ Name = "Anderlecht", CountryId = new Guid("1661ef33-73b5-45f8-9927-9bfb37f39899"), Id = new Guid("6669ef33-73b5-45f8-9987-9bfb37f39804")},
                 new Club{ Name = "Bodo/Glimt", CountryId = new Guid("896f85b8-30f9-4eb6-9bb1-cb24cfc98abc"), Id = new Guid("6669ef53-73b5-45f8-9987-9bfb37f39844")},
                 new Club{ Name = "Brann", CountryId = new Guid("896f85b8-30f9-4eb6-9bb1-cb24cfc98abc"), Id = new Guid("6669ef53-73b5-25f8-9987-9bfb37f39844")},
                 new Club{ Name = "Maccabi Tel-Aviv", CountryId = new Guid("896f85b8-31f9-4eb6-9bb1-cb24cfc98abc"), Id = new Guid("6969ef53-73b5-45f8-9987-9bfb37f39844")},
