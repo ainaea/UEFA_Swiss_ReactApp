@@ -6,6 +6,10 @@ function Scenario({ scenario, navigator }) {
         edit.scenario = scenario;
         navigator('/edit-scenario');
     }
+    function runSimulation() {
+        edit.scenario = scenario;
+        navigator('/rank-clubs');
+    }
 
   return (
       <div className="row bg-light col-md-4 border rounded-pill d-flex p-0 m-0">
@@ -21,7 +25,7 @@ function Scenario({ scenario, navigator }) {
           </div>  
           <div className="col-md-12 row" >
               <div className="col-md-3"/>
-              <h5 className="col-md-5 btn btn-primary border text-center">Run simulation</h5>
+              <h5 className="col-md-5 btn btn-primary border text-center" onClick={runSimulation}>Run simulation</h5>
           </div>
       </div>     
   );

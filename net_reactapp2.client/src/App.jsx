@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import AddCountry from './components/AddCountry';
 import AddEditClub from './components/AddEditClub';
 import AddEditScenario from './components/AddEditScenario';
+import RankClubs from './components/RankClubs';
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         const data = await response.json();
         setScenarios(data);
     }
+    const rankableCLubs = clubs.map((c) => ({ ...c, rank: 0 }));
   return (
     <>    
       <Layout>
@@ -45,13 +47,13 @@ function App() {
               <Route path='/Clubs' element={<AllClubs clubs={clubs} navigator={navigator} />} />
               <Route path='/Scenarios' element={<AllScenarios scenarios={scenarios} navigator={navigator} />} />
               <Route path='/Simulations' element={<AllSimulations />} />
-              <Route path='/rank-items' element={<AllSimulations />} />
               <Route path='/add-country' element={<AddCountry updateCountries={updateCountries} navigator={navigator} />} />
               <Route path='/edit-country' element={<AddCountry updateCountries={updateCountries} navigator={navigator} isEdit={true} />} />
               <Route path='/add-club' element={<AddEditClub updateClubs={updateClubs} navigator={navigator} countries={countries} />} />
               <Route path='/edit-club' element={<AddEditClub updateClubs={updateClubs} navigator={navigator} countries={countries} isEdit={true} />} />
               <Route path='/add-scenario' element={<AddEditScenario updateScenarios={updateScenarios} navigator={navigator} />} />
               <Route path='/edit-scenario' element={<AddEditScenario updateScenarios={updateScenarios} navigator={navigator} isEdit={true} />} />
+              <Route path='/rank-clubs' element={<RankClubs navigator={navigator} clubs={rankableCLubs} />} />
       </Layout>
     </>
   )
