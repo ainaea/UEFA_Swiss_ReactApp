@@ -5,10 +5,7 @@ import RankableCollection from './RankableCollection';
 
 function RankClubs({ navigator, clubs }) {
     const [rankableClubs, setRankableClubs] = useState(clubs);
-    console.log('above', rankableClubs.filter((rc) => rc.rank > 0).length)
-    console.log('equal', rankableClubs.filter((rc) => rc.rank === 0).length)
-    console.log('all', rankableClubs.length)
-
+    
     const scenario = edit.scenario;
     const pots = scenario.numberOfPot;
     const clubsPerPot = scenario.numberOfTeamsPerPot;
@@ -31,6 +28,12 @@ function RankClubs({ navigator, clubs }) {
         }        
     }
 
+    function updatePriorityClubs(id) {
+        const transformedCollection = rankableClubs.map((club) => (club.id === id ? { ...club, priority: !club.priority } : { ...club }));
+        var orderTransformedCollection = transformedCollection.sort((a, b) => b.priority - a.priority || a.name.localeCompare( b.name));
+        setRankableClubs(orderTransformedCollection)
+    }
+
 
     return (
         <div>
@@ -39,7 +42,7 @@ function RankClubs({ navigator, clubs }) {
           </div>
           <div className="unrankedCountriesDiv">
               <h4>All clubs</h4>
-                <AllRankableClubs clubs={rankableClubs.filter((rc)=>rc.rank === 0)} />
+                <AllRankableClubs clubs={rankableClubs.filter((rc) => rc.rank === 0)} updatePriorityClubs={ updatePriorityClubs} />
           </div>
       </div>
   );

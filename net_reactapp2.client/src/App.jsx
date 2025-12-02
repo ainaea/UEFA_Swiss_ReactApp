@@ -39,7 +39,7 @@ function App() {
         const data = await response.json();
         setScenarios(data);
     }
-    const rankableCLubs = clubs.map((c) => ({ ...c, rank: 0 }));
+    const rankableCLubs = clubs.map((c) => ({ ...c, rank: 0, priority: false }));
   return (
     <>    
       <Layout>
