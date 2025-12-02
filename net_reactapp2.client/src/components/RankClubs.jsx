@@ -23,15 +23,22 @@ function RankClubs({ navigator, clubs }) {
         const targetElm = ev.target;
         if (targetElm.childNodes.length === 0) {
             const transformedCollection = rankableClubs.map((club) => (club.id === id ? { ...club, rank: ranking } : { ...club }));
-            //console.log(transformedCollection.filter((a)=> a.rank == ranking));
-            setRankableClubs(transformedCollection);
+            updateClubs(transformedCollection);
         }        
     }
 
+    function updateClubs(transformedCollection) {
+        var orderTransformedCollection = transformedCollection.sort((a, b) => b.priority - a.priority || a.name.localeCompare(b.name));
+        setRankableClubs(orderTransformedCollection)
+    }
     function updatePriorityClubs(id) {
         const transformedCollection = rankableClubs.map((club) => (club.id === id ? { ...club, priority: !club.priority } : { ...club }));
-        var orderTransformedCollection = transformedCollection.sort((a, b) => b.priority - a.priority || a.name.localeCompare( b.name));
-        setRankableClubs(orderTransformedCollection)
+        updateClubs(transformedCollection);
+    }
+
+    function unSelectClub(id) {
+        const transformedCollection = rankableClubs.map((club) => (club.id === id ? { ...club, rank: 0 } : { ...club }));
+        updateClubs(transformedCollection);
     }
 
 
@@ -40,7 +47,7 @@ function RankClubs({ navigator, clubs }) {
           <div className="rankingDiv">
                 {potIndices.map(pi => <RankableCollection key={pi} name={`Pot ${pi}`} rank={pots - pi} subCount={clubsPerPot} updateRankableCLubs={updateRankableCLubs} rankableClubs={rankableClubs } />)}
           </div>
-          <div className="unrankedCountriesDiv">
+            <div className="unrankedCountriesDiv" onDragOver={e => e.preventDefault()} onDrop={e => unSelectClub(e.dataTransfer.getData('entityId'))}>
               <h4>All clubs</h4>
                 <AllRankableClubs clubs={rankableClubs.filter((rc) => rc.rank === 0)} updatePriorityClubs={ updatePriorityClubs} />
           </div>
