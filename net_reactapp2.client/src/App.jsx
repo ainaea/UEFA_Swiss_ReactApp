@@ -20,8 +20,10 @@ function App() {
     const [countries, setCountries] = useState([]);
     const [clubs, setClubs] = useState([]);
     const [scenarios, setScenarios] = useState([]);
+    const [simulations, setSimulations] = useState([]);
     useEffect(() => updateCountries, []);
     useEffect(() => updateClubs, []);
+    useEffect(() => updateScenarios, []);
     useEffect(() => updateScenarios, []);
     
     async function updateCountries() {
@@ -39,6 +41,11 @@ function App() {
         const data = await response.json();
         setScenarios(data);
     }
+    async function updateSimulations() {
+        const response = await fetch(`api/simulation/getall`);
+        const data = await response.json();
+        setSimulations(data);
+    }
     const rankableCLubs = clubs.map((c) => ({ ...c, rank: 0, priority: false }));
   return (
     <>    
@@ -46,14 +53,14 @@ function App() {
               <Route exact path='/' element={<AllCountries countries={countries} navigator={navigator} />} />
               <Route path='/Clubs' element={<AllClubs clubs={clubs} navigator={navigator} />} />
               <Route path='/Scenarios' element={<AllScenarios scenarios={scenarios} navigator={navigator} />} />
-              <Route path='/Simulations' element={<AllSimulations />} />
+              <Route path='/Simulations' element={<AllSimulations simulations={ simulations} />} />
               <Route path='/add-country' element={<AddCountry updateCountries={updateCountries} navigator={navigator} />} />
               <Route path='/edit-country' element={<AddCountry updateCountries={updateCountries} navigator={navigator} isEdit={true} />} />
               <Route path='/add-club' element={<AddEditClub updateClubs={updateClubs} navigator={navigator} countries={countries} />} />
               <Route path='/edit-club' element={<AddEditClub updateClubs={updateClubs} navigator={navigator} countries={countries} isEdit={true} />} />
               <Route path='/add-scenario' element={<AddEditScenario updateScenarios={updateScenarios} navigator={navigator} />} />
               <Route path='/edit-scenario' element={<AddEditScenario updateScenarios={updateScenarios} navigator={navigator} isEdit={true} />} />
-              <Route path='/rank-clubs' element={<RankClubs navigator={navigator} clubs={rankableCLubs} />} />
+              <Route path='/rank-clubs' element={<RankClubs navigator={navigator} clubs={rankableCLubs} updateSimulations={updateSimulations} />} />
       </Layout>
     </>
   )

@@ -1,6 +1,6 @@
-function AllSimulations() {
+function AllSimulations({ simulations }) {
   return (
-    <p>Hello world!</p>
+    <p>Hello {simulations.length} simulation!</p>
   );
 }
 
