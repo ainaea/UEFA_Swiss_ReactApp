@@ -1,83 +1,68 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Net_ReactApp2.Server.ViewModels;
+using UEFASwissFormatSelector.Models;
+using UEFASwissFormatSelector.Services;
 
 namespace Net_ReactApp2.Server.Controllers
 {
     public class SimulationController : Controller
     {
-        // GET: SimulationController
-        public ActionResult Index()
+        private readonly IRepository repository;
+
+        public SimulationController(IRepository repository)
         {
-            return Ok();
+            this.repository = repository;
+        }
+        public IActionResult GetAll()
+        {
+            return Ok(repository.ScenarioInstances.ToList());
         }
 
-        // GET: SimulationController/Details/5
-        public ActionResult Details(int id)
+        public IActionResult Get(Guid id)
         {
-            return Ok();
+            return Ok(repository.ScenarioInstances.FirstOrDefault(c => c.Id == id));
         }
 
-        // GET: SimulationController/Create
-        public ActionResult Create()
-        {
-            return Ok();
-        }
-
-        // POST: SimulationController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Create([FromBody] CreateSimulationVM vm)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var scenario = repository.Scenarios.FirstOrDefault(s => s.Id == vm.ScenarioId);
+                if (scenario == null)
+                    return BadRequest("Scenario not found");
+                int expectedClubCount = scenario.NumberOfPot * scenario.NumberOfTeamsPerPot;
+                if (vm.Clubs.Count() != expectedClubCount)
+                    return BadRequest("Club count is off");
+                var scenarioInstace = new ScenarioInstance(scenario);
+                var clubsInSI = new List<ClubInScenarioInstance>();
+                foreach (RankableClub rankedCLub in vm.Clubs)
+                {
+                    var club = repository.Clubs.FirstOrDefault(c=> c.Id == rankedCLub.Id);
+                    if(club == null || clubsInSI.Any(cisi => cisi.ClubId == rankedCLub.Id)) //to detect invalid club id and dublication of clubs
+                        return BadRequest($"Club {rankedCLub.Id} with name {rankedCLub.Name} is off");
+                    clubsInSI.Add(new ClubInScenarioInstance(rankedCLub.Id, scenarioInstace.Id));
+                }
+                scenarioInstace.ClubsInScenarioInstance = clubsInSI;
+                repository.ScenarioInstances.Add(scenarioInstace);
+                return Ok("Simulation added successfully");
             }
-            catch
+            return BadRequest("Model not valid");
+        }
+
+        [HttpPost]
+        public ActionResult Edit([FromBody] Country country)
+        {
+            if (ModelState.IsValid)
             {
+                var repoCountry = repository.Countries.Find(country.Id);
+                if (repoCountry == null)
+                    return NotFound();
+                repository.Countries.Update(country);
                 return Ok();
             }
-        }
-
-        // GET: SimulationController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return Ok();
-        }
-
-        // POST: SimulationController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return Ok();
-            }
-        }
-
-        // GET: SimulationController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return Ok();
-        }
-
-        // POST: SimulationController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return Ok();
-            }
+            return BadRequest("Model not valid");
         }
     }
 }
