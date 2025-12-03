@@ -76,7 +76,7 @@ function RankClubs({ navigator, clubs, updateSimulations }) {
             <div className="row">
                 <h3 className="col-sm-6">{scenario.name}</h3>
                 <label className="col-sm-2 col-form-label">Simulation:</label>
-                <div className="col-sm-2 bg-warning">
+                <div className="col-sm-2">
                     <input name="numberOfGamesPerPot" placeholder="Name for Simulation" className="form-control" required={true} value={simName} onChange={(e) => setSimName(e.target.value)} />
                 </div>
             </div>
