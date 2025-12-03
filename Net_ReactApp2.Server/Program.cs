@@ -15,6 +15,7 @@ builder.Services.AddCors(options =>
     });
 });
 builder.Services.AddSingleton<IRepository, MockRepository>();
+builder.Services.AddSingleton<IMatchDrawService, MatchDrawService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

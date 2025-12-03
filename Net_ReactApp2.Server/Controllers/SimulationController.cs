@@ -9,10 +9,12 @@ namespace Net_ReactApp2.Server.Controllers
     public class SimulationController : Controller
     {
         private readonly IRepository repository;
+        private readonly IMatchDrawService matchDrawService;
 
-        public SimulationController(IRepository repository)
+        public SimulationController(IRepository repository, IMatchDrawService matchDrawService)
         {
             this.repository = repository;
+            this.matchDrawService = matchDrawService;
         }
         public IActionResult GetAll()
         {
@@ -42,9 +44,27 @@ namespace Net_ReactApp2.Server.Controllers
                     var club = repository.Clubs.FirstOrDefault(c=> c.Id == rankedCLub.Id);
                     if(club == null || clubsInSI.Any(cisi => cisi.ClubId == rankedCLub.Id)) //to detect invalid club id and dublication of clubs
                         return BadRequest($"Club {rankedCLub.Id} with name {rankedCLub.Name} is off");
-                    clubsInSI.Add(new ClubInScenarioInstance(rankedCLub.Id, scenarioInstace.Id));
+                    clubsInSI.Add(new ClubInScenarioInstance(rankedCLub.Id, scenarioInstace.Id)
+                    {
+                        Club = repository.Clubs.FirstOrDefault(c => c.Id == rankedCLub.Id)
+                    });
                 }
                 scenarioInstace.ClubsInScenarioInstance = clubsInSI;
+
+                var pots = matchDrawService.PotTeam(scenarioInstace);
+                scenarioInstace.Pots = pots;
+
+                var opponents = matchDrawService.GenerateOpponentsForAllClubs(scenarioInstace);
+                scenarioInstace.Opponents = new ModifiedDictionary<IEnumerable<Pot>>();
+                scenarioInstace.Opponents.RePopulate( opponents);
+
+                var schedule = matchDrawService.DoMatchUps( scenarioInstace, scenario.NumberOfGamesPerPot);
+                scenarioInstace.MatchUps = new ModifiedDictionary<List<Club>>();
+                scenarioInstace.MatchUps.RePopulate(schedule.Item1);
+                scenarioInstace.MatchUpSkeleton = new ModifiedDictionary<List<string>>();
+                scenarioInstace.MatchUpSkeleton.RePopulate(schedule.Item2);
+
+
                 repository.ScenarioInstances.Add(scenarioInstace);
                 return Ok("Simulation added successfully");
             }
