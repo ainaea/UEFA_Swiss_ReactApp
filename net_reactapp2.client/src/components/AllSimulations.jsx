@@ -1,6 +1,7 @@
 function AllSimulations({ simulations }) {
+    console.log(simulations);
   return (
-    <p>Hello {simulations.length} simulation!</p>
+      simulations.map(si => <p key={si.id}>{si.scenarioName }Scenario {si.name} simulation!</p>)
   );
 }
 
