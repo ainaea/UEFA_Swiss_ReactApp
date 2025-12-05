@@ -24,7 +24,7 @@ function App() {
     useEffect(() => updateCountries, []);
     useEffect(() => updateClubs, []);
     useEffect(() => updateScenarios, []);
-    useEffect(() => updateScenarios, []);
+    useEffect(() => updateSimulations, []);
     
     async function updateCountries() {
         const response = await fetch(`api/country/getall`);
