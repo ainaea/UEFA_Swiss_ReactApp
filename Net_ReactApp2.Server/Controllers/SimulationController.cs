@@ -18,16 +18,17 @@ namespace Net_ReactApp2.Server.Controllers
         }
         public IActionResult GetAll()
         {
-            return Ok(repository.ScenarioInstances.ToList());
+            return Ok(repository.ScenarioInstances.Select(si => new ScenarioInstanceDTO(GetSimulationUpdated(si))).ToList());
         }
 
         public IActionResult Get(Guid id)
         {
-            return Ok(repository.ScenarioInstances.FirstOrDefault(c => c.Id == id));
+            var si = repository.ScenarioInstances.FirstOrDefault(c => c.Id == id);
+            return Ok(si == null? si: new ScenarioInstanceDTO(GetSimulationUpdated(si)));
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateSimulationVM vm)
+        public IActionResult Create([FromBody] CreateSimulationDTO vm)
         {
             if (ModelState.IsValid)
             {
@@ -41,8 +42,8 @@ namespace Net_ReactApp2.Server.Controllers
                 var clubsInSI = new List<ClubInScenarioInstance>();
                 foreach (RankableClub rankedCLub in vm.Clubs)
                 {
-                    var club = repository.Clubs.FirstOrDefault(c=> c.Id == rankedCLub.Id);
-                    if(club == null || clubsInSI.Any(cisi => cisi.ClubId == rankedCLub.Id)) //to detect invalid club id and dublication of clubs
+                    var club = repository.Clubs.FirstOrDefault(c => c.Id == rankedCLub.Id);
+                    if (club == null || clubsInSI.Any(cisi => cisi.ClubId == rankedCLub.Id)) //to detect invalid club id and dublication of clubs
                         return BadRequest($"Club {rankedCLub.Id} with name {rankedCLub.Name} is off");
                     clubsInSI.Add(new ClubInScenarioInstance(rankedCLub.Id, scenarioInstace.Id)
                     {
@@ -50,20 +51,7 @@ namespace Net_ReactApp2.Server.Controllers
                     });
                 }
                 scenarioInstace.ClubsInScenarioInstance = clubsInSI;
-
-                var pots = matchDrawService.PotTeam(scenarioInstace);
-                scenarioInstace.Pots = pots;
-
-                var opponents = matchDrawService.GenerateOpponentsForAllClubs(scenarioInstace);
-                scenarioInstace.Opponents = new ModifiedDictionary<IEnumerable<Pot>>();
-                scenarioInstace.Opponents.RePopulate( opponents);
-
-                var schedule = matchDrawService.DoMatchUps( scenarioInstace, scenario.NumberOfGamesPerPot);
-                scenarioInstace.MatchUps = new ModifiedDictionary<List<Club>>();
-                scenarioInstace.MatchUps.RePopulate(schedule.Item1);
-                scenarioInstace.MatchUpSkeleton = new ModifiedDictionary<List<string>>();
-                scenarioInstace.MatchUpSkeleton.RePopulate(schedule.Item2);
-
+                GetSimulationUpdated(scenarioInstace);
 
                 repository.ScenarioInstances.Add(scenarioInstace);
                 return Ok("Simulation added successfully");
@@ -71,18 +59,42 @@ namespace Net_ReactApp2.Server.Controllers
             return BadRequest("Model not valid");
         }
 
-        [HttpPost]
-        public ActionResult Edit([FromBody] Country country)
+        private ScenarioInstance GetSimulationUpdated(ScenarioInstance scenarioInstace)
         {
-            if (ModelState.IsValid)
+            if (scenarioInstace.Pots.Any(p=> p== null)) 
             {
-                var repoCountry = repository.Countries.Find(country.Id);
-                if (repoCountry == null)
-                    return NotFound();
-                repository.Countries.Update(country);
-                return Ok();
+                var pots = matchDrawService.PotTeam(scenarioInstace);
+                scenarioInstace.Pots = pots; 
             }
-            return BadRequest("Model not valid");
+            if (scenarioInstace.Opponents == null)
+            {
+                var opponents = matchDrawService.GenerateOpponentsForAllClubs(scenarioInstace);
+                scenarioInstace.Opponents = new ModifiedDictionary<IEnumerable<Pot>>();
+                scenarioInstace.Opponents.RePopulate(opponents);
+            }
+            if (scenarioInstace.MatchUps == null)
+            {
+                var schedule = matchDrawService.DoMatchUps(scenarioInstace, scenarioInstace.Scenario.NumberOfGamesPerPot);
+                scenarioInstace.MatchUps = new ModifiedDictionary<List<Club>>();
+                scenarioInstace.MatchUps.RePopulate(schedule.Item1);
+                scenarioInstace.MatchUpSkeleton = new ModifiedDictionary<List<string>>();
+                scenarioInstace.MatchUpSkeleton.RePopulate(schedule.Item2);
+            }
+            return scenarioInstace;
         }
+
+        //[HttpPost]
+        //public ActionResult Edit([FromBody] Country country)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var repoCountry = repository.Countries.Find(country.Id);
+        //        if (repoCountry == null)
+        //            return NotFound();
+        //        repository.Countries.Update(country);
+        //        return Ok();
+        //    }
+        //    return BadRequest("Model not valid");
+        //}
     }
 }
