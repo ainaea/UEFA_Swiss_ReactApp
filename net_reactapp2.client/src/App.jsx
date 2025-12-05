@@ -13,6 +13,7 @@ import AddCountry from './components/AddCountry';
 import AddEditClub from './components/AddEditClub';
 import AddEditScenario from './components/AddEditScenario';
 import RankClubs from './components/RankClubs';
+import Simulation from './components/Simulation';
 
 
 function App() {
@@ -53,7 +54,7 @@ function App() {
               <Route exact path='/' element={<AllCountries countries={countries} navigator={navigator} />} />
               <Route path='/Clubs' element={<AllClubs clubs={clubs} navigator={navigator} />} />
               <Route path='/Scenarios' element={<AllScenarios scenarios={scenarios} navigator={navigator} />} />
-              <Route path='/Simulations' element={<AllSimulations simulations={ simulations} />} />
+              <Route path='/Simulations' element={<AllSimulations simulations={simulations} navigator={navigator} />} />
               <Route path='/add-country' element={<AddCountry updateCountries={updateCountries} navigator={navigator} />} />
               <Route path='/edit-country' element={<AddCountry updateCountries={updateCountries} navigator={navigator} isEdit={true} />} />
               <Route path='/add-club' element={<AddEditClub updateClubs={updateClubs} navigator={navigator} countries={countries} />} />
@@ -61,6 +62,7 @@ function App() {
               <Route path='/add-scenario' element={<AddEditScenario updateScenarios={updateScenarios} navigator={navigator} />} />
               <Route path='/edit-scenario' element={<AddEditScenario updateScenarios={updateScenarios} navigator={navigator} isEdit={true} />} />
               <Route path='/rank-clubs' element={<RankClubs navigator={navigator} clubs={rankableCLubs} updateSimulations={updateSimulations} />} />
+              <Route path='/view-simulation' element={<Simulation />} />
       </Layout>
     </>
   )

@@ -8,7 +8,7 @@ namespace Net_ReactApp2.Server.ViewModels
         private const char separator = '_';
         public ClubFixturesDTO(Club club, List<string> clubfixturesSkeleton, List<Club> clubfixtures)
         {
-            MainCLub = club;
+            MainClub = club;
             var clubFixtures = new List<OpponentDTO>();
             for (int i = 0; i < clubfixturesSkeleton.Count; i++)
             {
@@ -16,7 +16,7 @@ namespace Net_ReactApp2.Server.ViewModels
             }
             fixtures = clubFixtures;
         }
-        public Club MainCLub { get; set; }
+        public Club MainClub { get; set; }
         private IEnumerable<OpponentDTO> fixtures;
         public IEnumerable<OpponentDTO> Fixtures { get => fixtures.OrderBy(fx => fx.PotName).ThenByDescending(fx => fx.Home).ToList(); }
     }
