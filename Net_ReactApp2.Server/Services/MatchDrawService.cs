@@ -567,6 +567,17 @@ namespace UEFASwissFormatSelector.Services
                         }
                         //selectedClubInOpponentPotWithIncompletePotFixtures = sCIOPWIPF
                         var sCIOPWIPF = clubsInOpponentPotWithIncompletePotFixtures.Count() == 0 && clubPotName == opponentPotname && remainingOpponents % 2 == 0 ? thisClub : FindOpponents(1, thisClub.Id, clubsInOpponentPotWithIncompletePotFixtures, clubsInOpponentPotWithIncompletePotFixtures).First();      //from opponentPotname
+
+                        //this implementation was added because some earlier swap migth have made direct matching possible and maybe necessary.
+                        var freeAndPlayableOpponents = clubsInOpponentPotWithIncompletePotFixtures.Where(c => c.CountryId != thisClub.CountryId && !ClubHasFixtureAgainst(c.Id, thisClub.Id, fixedMatches) && ThisClubCanPlayCountryClub(c, thisClub, maxOpponenentFromADivision, fixedMatches, scenarioInstance.ClubsInScenarioInstance)).ToList();
+                        if (freeAndPlayableOpponents.Count > 0)
+                        {
+                            var selectedFAPO = FindOpponents(1, thisClub.Id, freeAndPlayableOpponents, freeAndPlayableOpponents).First();
+                            fixedMatches[thisClub.Id].Add(GenerateClubPotName(selectedFAPO.Id, opponentPotname));
+                            fixedMatches[selectedFAPO.Id].Add(GenerateClubPotName(thisClub.Id, clubPotName));
+                            continue;
+                        }
+
                         var potentialThisClubOpponents = clubsInOpponentPot.Where(c => thisClub.CountryId != c.CountryId && !ClubHasFixtureAgainst(thisClub.Id, c.Id, fixedMatches) && ThisClubCanPlayCountryClub(thisClub, c, maxOpponenentFromADivision, fixedMatches, scenarioInstance.ClubsInScenarioInstance));
                         var clubPotOpponent = new Dictionary<Guid, List<Club>>();
                         foreach (Club club in potentialThisClubOpponents)
