@@ -51,6 +51,7 @@ namespace Net_ReactApp2.Server.Controllers
                     });
                 }
                 scenarioInstace.ClubsInScenarioInstance = clubsInSI;
+                scenarioInstace.Name = vm.Name;
                 GetSimulationUpdated(scenarioInstace);
 
                 repository.ScenarioInstances.Add(scenarioInstace);
