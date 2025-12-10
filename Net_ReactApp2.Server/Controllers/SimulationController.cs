@@ -61,7 +61,7 @@ namespace Net_ReactApp2.Server.Controllers
 
         private ScenarioInstance GetSimulationUpdated(ScenarioInstance scenarioInstace)
         {
-            if (scenarioInstace.Pots.Any(p=> p== null)) 
+            if (scenarioInstace.Pots == null || scenarioInstace.Pots.Any(p=> p== null)) 
             {
                 var pots = matchDrawService.PotTeam(scenarioInstace);
                 scenarioInstace.Pots = pots; 
