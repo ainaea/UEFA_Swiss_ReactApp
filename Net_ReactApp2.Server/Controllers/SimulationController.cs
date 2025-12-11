@@ -47,7 +47,8 @@ namespace Net_ReactApp2.Server.Controllers
                         return BadRequest($"Club {rankedCLub.Id} with name {rankedCLub.Name} is off");
                     clubsInSI.Add(new ClubInScenarioInstance(rankedCLub.Id, scenarioInstace.Id)
                     {
-                        Club = repository.Clubs.FirstOrDefault(c => c.Id == rankedCLub.Id)
+                        Club = repository.Clubs.FirstOrDefault(c => c.Id == rankedCLub.Id),
+                        Ranking = rankedCLub.Rank
                     });
                 }
                 scenarioInstace.ClubsInScenarioInstance = clubsInSI;
