@@ -25,7 +25,12 @@ function RankClubs({ navigator, clubs, updateSimulations }) {
         if (targetElm.childNodes.length === 0) {
             const transformedCollection = rankableClubs.map((club) => (club.id === id ? { ...club, rank: ranking } : { ...club }));
             updateClubs(transformedCollection);
-        }        
+        }
+        else if (targetElm.childNodes.length === 1) {
+            let otherRanking = rankableClubs.filter((a) => a.id == id)[0].rank;
+            const transformedCollection = rankableClubs.map((club) => (club.id === id || club.rank == ranking ? (club.id == id ? { ...club, rank: ranking } : { ...club, rank: otherRanking }) : { ...club }));
+            updateClubs(transformedCollection);
+        }
     }
 
     function updateClubs(transformedCollection) {
