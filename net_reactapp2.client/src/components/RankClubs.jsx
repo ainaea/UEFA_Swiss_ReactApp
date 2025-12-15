@@ -3,7 +3,8 @@ import { edit } from './fields';
 import AllRankableClubs from './AllRankableClubs';
 import RankableCollection from './RankableCollection';
 
-function RankClubs({ navigator, clubs, updateSimulations }) {
+
+function RankClubs({ navigator, clubs, updateSimulations, isResimulation = false }) {
     const [rankableClubs, setRankableClubs] = useState(clubs);
     const [simName, setSimName] = useState(undefined);
     
@@ -18,6 +19,12 @@ function RankClubs({ navigator, clubs, updateSimulations }) {
     var clubsIndices = [];
     for (var i = 1; i <= clubsPerPot; i++) {
         clubsIndices[i - 1] = i;
+    }
+
+    if (isResimulation) {
+        let clubsRanking = edit.simulationClubs_Ranking;
+        clubsRanking.map((cr)=> clubs.filter(c=>c.id == cr.id)[0].rank = cr.rank);
+
     }
 
     function updateRankableCLubs(id, ranking, ev) {

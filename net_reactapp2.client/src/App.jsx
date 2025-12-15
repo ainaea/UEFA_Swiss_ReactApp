@@ -62,7 +62,8 @@ function App() {
               <Route path='/add-scenario' element={<AddEditScenario updateScenarios={updateScenarios} navigator={navigator} />} />
               <Route path='/edit-scenario' element={<AddEditScenario updateScenarios={updateScenarios} navigator={navigator} isEdit={true} />} />
               <Route path='/rank-clubs' element={<RankClubs navigator={navigator} clubs={rankableCLubs} updateSimulations={updateSimulations} />} />
-              <Route path='/view-simulation' element={<Simulation />} />
+              <Route path='/resimulate' element={<RankClubs navigator={navigator} clubs={rankableCLubs} updateSimulations={updateSimulations} isResimulation={true } />} />
+              <Route path='/view-simulation' element={<Simulation navigator={navigator}/>} />
       </Layout>
     </>
   )
