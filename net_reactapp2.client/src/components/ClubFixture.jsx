@@ -7,8 +7,8 @@ function ClubFixture({ fixture }) {
             <div className="col-md-10">
                 <h6 className="pl-1">{fixture.opponent.name} ({fixture.opponent.country.abbrevation}) ({fixture.potName})</h6>
             </div>
-            {fixture.home && <HouseFill className="btn col-md-2 fs-3" size={55} color="blue" />}
-            {!fixture.home && <AirplaneFill className="btn col-md-2 fs-3" size={55} color="blue" />}
+            {fixture != null &&  fixture.home && <HouseFill className="btn col-md-2 fs-3" size={55} color="blue" />}
+            {fixture != null && !fixture.home && <AirplaneFill className="btn col-md-2 fs-3" size={55} color="blue" />}
         </div>
       /*<p> Club:{fixture.opponent.name} Home;{fixture.home == true ? "True" : "False"} Pot:{fixture.potName}</p>*/
   );

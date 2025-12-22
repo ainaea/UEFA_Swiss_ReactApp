@@ -4,7 +4,7 @@ namespace Net_ReactApp2.Server.ViewModels
 {
     public class OpponentDTO
     {
-        public OpponentDTO(Club opponent, string pot, bool home)
+        public OpponentDTO(Club opponent, string pot, bool? home)
         {
             Opponent = opponent;
             PotName = pot;
@@ -12,6 +12,6 @@ namespace Net_ReactApp2.Server.ViewModels
         }
         public Club Opponent { get; set; }
         public String PotName { get; set; }
-        public bool Home { get; set; }
+        public bool? Home { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace Net_ReactApp2.Server.ViewModels
             var clubFixtures = new List<OpponentDTO>();
             for (int i = 0; i < clubfixturesSkeleton.Count; i++)
             {
-                clubFixtures.Add(new OpponentDTO(clubfixtures[i], clubfixturesSkeleton[i].Split(separator)[1], clubfixturesSkeleton[i].Split(separator)[2] == true.ToString() ));
+                clubFixtures.Add(new OpponentDTO(clubfixtures[i], clubfixturesSkeleton[i].Split(separator)[1], clubfixturesSkeleton[i].Split(separator).Length == 3? clubfixturesSkeleton[i].Split(separator)[2] == true.ToString() : null));
             }
             fixtures = clubFixtures;
         }
