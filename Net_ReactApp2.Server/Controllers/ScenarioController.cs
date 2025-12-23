@@ -32,7 +32,7 @@ namespace Net_ReactApp2.Server.Controllers
                 repository.Scenarios.Add(scenario);
                 return Ok("Scenario added successfully");
             }
-            return BadRequest("Model not valid");
+            return BadRequest(new { Error = "Model not valid" });
         }
 
         [HttpPost]
@@ -46,7 +46,7 @@ namespace Net_ReactApp2.Server.Controllers
                 repository.Scenarios.Update(scenario);
                 return Ok();
             }
-            return BadRequest("Model not valid");
+            return BadRequest(new { Error = "Model not valid" });
         }
     }
 }

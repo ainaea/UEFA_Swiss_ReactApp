@@ -34,10 +34,10 @@ namespace Net_ReactApp2.Server.Controllers
             {
                 var scenario = repository.Scenarios.FirstOrDefault(s => s.Id == vm.ScenarioId);
                 if (scenario == null)
-                    return BadRequest("Scenario not found");
+                    return BadRequest(new { Error = "Scenario not found" });
                 int expectedClubCount = scenario.NumberOfPot * scenario.NumberOfTeamsPerPot;
                 if (vm.Clubs.Count() != expectedClubCount)
-                    return BadRequest("Club count is off");
+                    return BadRequest(new { Error = "Club count is off" });
                 var scenarioInstace = new ScenarioInstance(scenario);
                 var clubsInSI = new List<ClubInScenarioInstance>();
                 foreach (RankableClub rankedCLub in vm.Clubs)

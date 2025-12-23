@@ -32,13 +32,13 @@ namespace Net_ReactApp2.Server.Controllers
                 var clubCountry = repository.Countries.FirstOrDefault(c => club.CountryId == c.Id);
                 if (clubCountry == null)
                 {
-                    return BadRequest("Country not found");
+                    return BadRequest(new { Error = "Country not found" });
                 }
                 club.Id = Guid.NewGuid();
                 repository.Clubs.Add(club);
                 return Ok("Club added successfully");
             }
-            return BadRequest("Model not valid");
+            return BadRequest(new { Error = "Model not valid" });
         }
 
         [HttpPost]
@@ -49,7 +49,7 @@ namespace Net_ReactApp2.Server.Controllers
                 var clubCountry = repository.Countries.FirstOrDefault(c => club.CountryId == c.Id);
                 if (clubCountry == null)
                 {
-                    return BadRequest("Country not found");
+                    return BadRequest(new { Error = "Country not found" });
                 }
                 var repoCountry = repository.Clubs.Find(club.Id);
                 if (repoCountry == null)
@@ -57,7 +57,7 @@ namespace Net_ReactApp2.Server.Controllers
                 repository.Clubs.Update(club);
                 return Ok();
             }
-            return BadRequest("Model not valid");
+            return BadRequest(new { Error = "Model not valid" });
         }
     }
 }

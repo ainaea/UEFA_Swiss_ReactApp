@@ -34,7 +34,7 @@ namespace Net_ReactApp2.Server.Controllers
                 repository.Countries.Add(country);
                 return Ok("Country added successfully");
             }
-            return BadRequest("Model not valid");
+            return BadRequest(new { Error = "Model not valid" });
         }
 
         [HttpPost]
@@ -48,7 +48,7 @@ namespace Net_ReactApp2.Server.Controllers
                 repository.Countries.Update(country);
                 return Ok();
             }
-            return BadRequest("Model not valid");
+            return BadRequest(new { Error = "Model not valid" });
         }
     }
 }
