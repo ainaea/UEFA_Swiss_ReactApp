@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { edit } from './fields';
 import AllRankableClubs from './AllRankableClubs';
 import RankableCollection from './RankableCollection';
+import ValidationSummary from './ValidationSummary'
 
 
 function RankClubs({ navigator, clubs, updateSimulations, isResimulation = false }) {
     const [rankableClubs, setRankableClubs] = useState(clubs);
-    const [simName, setSimName] = useState(undefined);
-    
+    const [simName, setSimName] = useState("");
+    const [validationSummary, setValidationSummary] = useState([]);
+    let selectedClubs = rankableClubs.filter(c => c.rank > 0);
     const scenario = edit.scenario;
     const pots = scenario.numberOfPot;
     const clubsPerPot = scenario.numberOfTeamsPerPot;
     const targetSelection = pots * clubsPerPot;
+
     var potIndices = [];
     for (var i = 1; i <= pots; i++) {
         potIndices[i - 1] = i;
@@ -26,6 +29,10 @@ function RankClubs({ navigator, clubs, updateSimulations, isResimulation = false
         clubsRanking.map((cr)=> clubs.filter(c=>c.id == cr.id)[0].rank = cr.rank);
 
     }
+
+    useEffect(() => {
+        isModelValid();
+    }, [simName, rankableClubs])
 
     function updateRankableCLubs(id, ranking, ev) {
         const targetElm = ev.target;
@@ -55,8 +62,7 @@ function RankClubs({ navigator, clubs, updateSimulations, isResimulation = false
     }
 
     async function intitiateSimulation() {
-        const selectedClubs = rankableClubs.filter(c => c.rank > 0);
-        if (selectedClubs.length == targetSelection && simName.length>0) {
+        if (isModelValid()) {
             var data = { name: simName, scenarioId: scenario.id, clubs: selectedClubs };
             const endpoint = 'api/simulation/create';
             try {
@@ -72,7 +78,7 @@ function RankClubs({ navigator, clubs, updateSimulations, isResimulation = false
                     navigator('/Simulations');
                 }
                 else {
-                    console.log(Object.values(data))
+                    console.log(response)
                 }
             } catch (e) {
                 console.log('Error sending data:', e)
@@ -82,9 +88,20 @@ function RankClubs({ navigator, clubs, updateSimulations, isResimulation = false
 
     }
 
+    function isModelValid() {
+        var modelErrors = [];
+        if (simName.length < 4)
+            modelErrors.push('Enter a Name of atleast 4 characters long');
+        if (selectedClubs.length < targetSelection)
+            modelErrors.push(`Selection is incomplete. ${selectedClubs.length} of ${targetSelection} selected`);
+        
+        setValidationSummary(modelErrors);
+        return modelErrors.length == 0;
+    }
 
     return (
-        <div>            
+        <div>
+            <ValidationSummary Summary={validationSummary} />
             <div className="row">
                 <h3 className="col-sm-6">{scenario.name}</h3>
                 <label className="col-sm-2 col-form-label">Simulation:</label>
