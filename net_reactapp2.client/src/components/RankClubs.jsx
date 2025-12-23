@@ -78,7 +78,8 @@ function RankClubs({ navigator, clubs, updateSimulations, isResimulation = false
                     navigator('/Simulations');
                 }
                 else {
-                    console.log(response)
+                    var resp = await response.json().then(ar => ar.error);
+                    setValidationSummary([resp]);
                 }
             } catch (e) {
                 console.log('Error sending data:', e)
